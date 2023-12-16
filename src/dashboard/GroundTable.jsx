@@ -3,6 +3,18 @@ import axios from 'axios';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 
 const GroundTable = () => {
+  const initialNewGroundState = {
+    name: '',
+    phone: '',
+    location: '',
+    city: '',
+    size: '',
+    hourly_rate: '',
+    start_time: '',
+    end_time: '',
+    description: '',
+    payment: false,
+  };
   const [groundData, setGroundData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -307,3 +319,5 @@ const GroundTable = () => {
 };
 
 export default GroundTable;
+
+

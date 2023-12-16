@@ -727,10 +727,10 @@ const diskStorage = multer.diskStorage({
 app.use(bodyParser.json());
 const pool = new Pool({
   user: 'postgres',
-  password: '1234',
+  password: '123',
   host: 'localhost',
   port: 5432,
-  database: 'footboolai',
+  database: 'football',
 });
 
 ///////////////////////////////////////////// USERS ///////////////////////////////////////////////////////////
@@ -1068,7 +1068,7 @@ app.delete('/delete-stadium/:stadium_id', authenticateAdminToken, async (req, re
   
 function authenticateAdminToken(req, res, next) {
     const token = req.header('Authorization');
-    
+      
     if (!token) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -1293,19 +1293,24 @@ app.get('/bookings-info', authenticateAdminToken, async (req, res) => {
     const { page = 1, pageSize = 20 } = req.query;
     const offset = (page - 1) * pageSize;
       const result = await pool.query(`
-          SELECT
-              b.booking_id,
-              u.full_name,
-              b.phone,
-              b.start_time,
-              b.end_time,
-              b.note,
-              b.status,
-              EXTRACT(HOUR FROM (b.end_time - b.start_time)) AS total_hours
-          FROM
-              public.bookings b
-          JOIN
-              public.users u ON b.user_id = u.user_id;
+      SELECT
+      b.booking_id,
+      u.full_name,
+      s.stadium_id,
+      s.name AS stadium_name,
+      b.phone,
+      b.start_time,
+      b.end_time,
+      b.note,
+      b.status,
+      EXTRACT(HOUR FROM (b.end_time - b.start_time)) AS total_hours
+  FROM
+      public.bookings b
+  JOIN
+      public.users u ON b.user_id = u.user_id
+  JOIN
+      public.stadiums s ON b.stadium_id = s.stadium_id;
+  
       `);
 
       res.json({ message: 'Booking information retrieved successfully', bookings: result.rows });
